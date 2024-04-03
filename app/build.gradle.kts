@@ -43,7 +43,12 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+
 }
