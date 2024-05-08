@@ -7,19 +7,34 @@
 
     <fragment
         android:id="@+id/nav_lectura"
-        android:name="com.example.trvciuw.ui.home.HomeFragment"
+        android:name="com.example.trvciuw.ui.lecturaIUW.LecturaFragment"
         android:label="@string/menu_lectura"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_lectura" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.trvciuw.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_fichatecnica"
+        android:name="com.example.trvciuw.ui.fichatecnica.FichatecnicaFragment"
+        android:label="@string/menu_fichatecnica"
+        tools:layout="@layout/fragment_fichatecnica" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.trvciuw.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_homologacion"
+        android:name="com.example.trvciuw.ui.homologacion.HomologacionFragment"
+        android:label="@string/menu_homologacion"
+        tools:layout="@layout/fragment_homologacion" />
+    <fragment
+        android:id="@+id/nav_referencia"
+        android:name="com.example.trvciuw.ui.referencia.ReferenciaFragment"
+        android:label="@string/menu_referencia"
+        tools:layout="@layout/fragment_referencia" />
+    <fragment
+        android:id="@+id/nav_informacion"
+        android:name="com.example.trvciuw.ui.informacion.InformacionFragment"
+        android:label="@string/menu_informacion"
+        tools:layout="@layout/fragment_informacion" />
+    <fragment
+        android:id="@+id/nav_historico"
+        android:name="com.example.trvciuw.ui.historico.HistoricoFragment"
+        android:label="@string/menu_historico"
+        tools:layout="@layout/fragment_historico" />
 </navigation>

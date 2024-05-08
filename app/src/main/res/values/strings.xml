@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IUW</string>
+    <string name="app_name">FasePrueba</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Industrias Triveca S.A.C.</string>
@@ -8,10 +8,20 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_lectura">Lectura de IUW</string>
-    <string name="menu_gallery">Ficha Tecnica</string>
-    <string name="menu_slideshow">Homologación</string>
+    <string name="menu_fichatecnica">Ficha Tecnica</string>
+    <string name="menu_homologacion">Homologación</string>
+    <string name="menu_referencia">Referencia</string>
+    <string name="menu_historico">Historico</string>
+    <string name="menu_informacion">Informacion</string>
 
 
     <string name="nfc_not_supported">Este dispositivo no soporta NFC</string>
     <string name="no_ndef_messages">ERROR ERROR!!!</string>
+
+    <string name="nfc_disabled">NFC está desactivado</string>
+    <string name="nfc_enabled">NFC está activado</string>
+
+    <string name="alerta_tuberia_title">Alerta de Medidor</string>
+    <string name="alerta_tuberia_message">Tubería vacía</string>
+
 </resources>
