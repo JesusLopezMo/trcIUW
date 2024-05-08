@@ -15,60 +15,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.trvciuw.databinding.FragmentHomeBinding;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private NfcAdapter nfcAdapter;
+    private HomeViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        nfcAdapter = NfcAdapter.getDefaultAdapter(getContext());
-        if(nfcAdapter == null){
-            Toast.makeText(getContext(), "Este dispositivo no soporta NFC", Toast.LENGTH_SHORT).show();
-
-        }else if(!nfcAdapter.isEnabled()){
-            Toast.makeText(getContext(), "NFC está desactivado", Toast.LENGTH_SHORT).show();
-
-        }else{
-            Toast.makeText(getContext(), "NFC está activado", Toast.LENGTH_SHORT).show();
-        }
-        binding.linkTriveca.setOnClickListener(new View.OnClickListener() {
+        homeViewModel.getCurrentDate().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://linktr.ee/triveca"));
-                startActivity(browserIntent);
+            public void onChanged(@Nullable String s) {
+                TextView fechaActual = binding.fechaActual;
+                fechaActual.setText(s);
             }
         });
+
+
         return root;
     }
-
-
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -10,4 +10,8 @@
     <string name="menu_lectura">Lectura de IUW</string>
     <string name="menu_gallery">Ficha Tecnica</string>
     <string name="menu_slideshow">Homologación</string>
+
+
+    <string name="nfc_not_supported">Este dispositivo no soporta NFC</string>
+    <string name="no_ndef_messages">ERROR ERROR!!!</string>
 </resources>

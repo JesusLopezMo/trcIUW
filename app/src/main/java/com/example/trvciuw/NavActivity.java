@@ -16,9 +16,11 @@ import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.trvciuw.ui.home.HomeViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -44,11 +46,7 @@ public class NavActivity extends AppCompatActivity {
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private IntentFilter[] readingTagFilters;
-
-    // Lista para almacenar palabras que empiecen con "Vol"
-    private List<String> volWordsList;
-    private TextView lecturaVol;
-    String firstLine = null;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +69,9 @@ public class NavActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        // Inicializar ViewModel
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null) {
             Toast.makeText(this, "Este dispositivo no soporta NFC", Toast.LENGTH_SHORT).show();
@@ -78,7 +79,7 @@ public class NavActivity extends AppCompatActivity {
             return;
         }
         // Configurar el PendingIntent para la actividad actual
-        Log.d("MainActivity", "Configurando PendingIntent");
+
         pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
@@ -88,8 +89,6 @@ public class NavActivity extends AppCompatActivity {
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         readingTagFilters = new IntentFilter[]{tagDetected};
 
-        lecturaVol = findViewById(R.id.lecturaVol);
-        volWordsList = new ArrayList<>(); //
     }
 
     @Override
@@ -121,102 +120,17 @@ public class NavActivity extends AppCompatActivity {
             nfcAdapter.disableForegroundDispatch(this);
         }
     }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Toast.makeText(this, "NFC intent received!", Toast.LENGTH_SHORT).show();
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Log.d("NavActivity", "Nueva intención NFC recibida");
-            readFromTag(intent);
-        }
-    }
-    private void readFromTag(Intent intent) {
-        // Limpiar la lista volWordsList
-        volWordsList.clear();
-
-        try {
-            NdefMessage[] msgs = getNdefMessages(intent);
-            if (msgs != null && msgs.length > 0) {
-                NdefRecord record = msgs[0].getRecords()[0];
-                String text = parseTextRecord(record);
-                if (text != null) {
-                    String[] lines = text.split("\n"); // Dividir el texto en líneas
-                    firstLine = lines[1]; // Capturar la primera línea del texto
-                    String Segundalinea = firstLine.substring(firstLine.indexOf(':') + 1).trim();
-                    for (String line : lines) {
-                        if (line.startsWith("Vol")) {
-                            volWordsList.add(line); // Agregar línea a la lista si contiene "Vol"
-                        }
-                    }
-                    // Manejar la primera línea con un try-catch individual
-                    try {
-                        // Procesar la primera línea aquí
-                        // Por ejemplo, mostrarla en un TextView
-                        displayFirstLine(Segundalinea);
-                    } catch (Exception e) {
-                        Log.e("ReadTag", "Error al procesar la primera línea: " + e.getMessage(), e);
-                    }
-                    // Obtener el texto sin "Vol:"
-                    List<String> filteredLines = new ArrayList<>();
-                    for (String volLine : volWordsList) {
-                        // Obtener el texto después de "Vol:"
-                        String lineWithoutVol = volLine.substring(volLine.indexOf(':') + 1).trim();
-                        filteredLines.add(lineWithoutVol);
-                    }
-                    Log.d("ReadTag", "Contenido de la línea: " + filteredLines); // Mostrar contenido de la línea en el registro
-                    displayNfcContent(filteredLines.toString().replaceAll("[\\[\\]]", ""));
-                }
-            } else {
-                displayNfcContent("No se encontraron mensajes NDEF en la etiqueta NFC");
-            }
-        } catch (Exception e) {
-            if (e.getMessage() != null) {
-                Log.e("ReadTag", "Error al leer la etiqueta NFC Linea: " + e.getMessage(), e);
-                displayNfcContent("Error al leer la etiqueta NFC: " + e.getMessage());
-            } else {
-                Log.e("ReadTag", "Error al leer la etiqueta NFC", e);
-                displayNfcContent("Error al leer la etiqueta NFC");
-            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", Locale.getDefault());
+            String currentDateAndTime = sdf.format(new Date());
+            homeViewModel.setCurrentDate(currentDateAndTime);
         }
     }
 
-    private void displayFirstLine(String firstLine) {
-        // Mostrar la primera línea en un TextView
-        // Por ejemplo, si tienes un TextView con id 'lecturaPrimeraLinea'
-        TextView lecturaSerie = findViewById(R.id.lecturaSerie);
-        lecturaSerie.setText(firstLine);
-
-    }
-    private void displayNfcContent(String content) {
-        // Obtener la fecha y hora actuales
-        String currentDateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        // Mostrar la fecha y hora actuales en un TextView
-        // Asegúrate de tener un TextView con id 'fechaActual' en tu layout
-        TextView fechaActualTextView = findViewById(R.id.fechaActual);
-        fechaActualTextView.setText(currentDateTime);
-        lecturaVol.setText(content);
-    }
-
-    private NdefMessage[] getNdefMessages(Intent intent) {
-        Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        if (rawMessages != null && rawMessages.length > 0) {
-            NdefMessage[] messages = new NdefMessage[rawMessages.length];
-            for (int i = 0; i < rawMessages.length; i++) {
-                messages[i] = (NdefMessage) rawMessages[i];
-            }
-            return messages;
-        } else {
-            return null;
-        }
-    }
-
-    private String parseTextRecord(NdefRecord record) throws UnsupportedEncodingException {
-        byte[] payload = record.getPayload();
-        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
-        int languageCodeLength = payload[0] & 0063;
-        return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
-    }
 
 
 

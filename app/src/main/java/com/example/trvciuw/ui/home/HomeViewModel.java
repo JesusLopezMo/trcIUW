@@ -16,6 +16,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.trvciuw.R;
+
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,33 +26,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class HomeViewModel extends ViewModel {
+    private final MutableLiveData<String> currentDate = new MutableLiveData<>();
 
-    /*
-    private final MutableLiveData<String> mText;
-    public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+    public void setCurrentDate(String date) {
+        currentDate.setValue(date);
     }
-    public LiveData<String> getText() {
-        return mText;
-    }*/
 
-
-    private NfcAdapter nfcAdapter;
-    private PendingIntent pendingIntent;
-    private IntentFilter[] readingTagFilters;
-
-
-
-    // Lista para almacenar palabras que empiecen con "Vol"
-    private List<String> volWordsList;
-    String firstLine = null;
-
-
-
-
-
-
-
+    public LiveData<String> getCurrentDate() {
+        return currentDate;
+    }
 
 }
