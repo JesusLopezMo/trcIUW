@@ -44,7 +44,7 @@ import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
 
 
-public class NavActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityNavBinding binding;
     private NfcAdapter nfcAdapter;
@@ -94,7 +94,7 @@ public class NavActivity extends AppCompatActivity {
             finish();
             return;
         }
-        Log.d("NavActivity", "Configurando PendingIntent");
+        Log.d("MainActivity", "Configurando PendingIntent");
         pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
@@ -183,7 +183,7 @@ public class NavActivity extends AppCompatActivity {
                 processText(text);
             }
         } catch (UnsupportedEncodingException e) {
-            Log.e("NavActivity", "Unsupported Encoding", e);
+            Log.e("MainActivity", "Unsupported Encoding", e);
         }
     }
     private String parseTextRecord(NdefRecord record) throws UnsupportedEncodingException {
