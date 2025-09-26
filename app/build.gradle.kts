@@ -26,17 +26,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding = true
     }
-
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -44,19 +42,14 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.android.pdf.viewer)
+    implementation(libs.glide)
+    implementation(libs.gif.drawable)
+
+    annotationProcessor(libs.glide.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    implementation(libs.legacy.support.v4)
-
-    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-    implementation("com.google.android.material:material:1.4.0")
-
-
-
-
 }
