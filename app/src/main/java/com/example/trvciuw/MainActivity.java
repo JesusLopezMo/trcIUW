@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter[] readingTagFilters;
     private List<String> lstinformacionNFC = new ArrayList<>();
     private GifImageView alertGif;
-    String lineaSerie = null;
     private boolean isGifAnimating = false;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
     private LecturaViewModel lecturaViewModel;
@@ -147,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             if (msgs != null && msgs.length > 0) {
                 processNdefMessages(msgs);
             } else {
-                displayNfcContent(getString(R.string.no_ndef_messages));
+                displayNfcContent(getString(R.string.no_ndef_messages), getString(R.string.no_ndef_messages));
             }
         }
         else if(navController.getCurrentDestination().getId() == R.id.nav_informacion){
@@ -156,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             if (msgs != null && msgs.length > 0) {
                 processNdefMessages(msgs);
             } else {
-                displayNfcContent(getString(R.string.no_ndef_messages));
+                displayNfcContent(getString(R.string.no_ndef_messages), getString(R.string.no_ndef_messages));
             }
         }else {
             Toast.makeText(this, "No se puede leer NFC en esta pantalla", Toast.LENGTH_SHORT).show();
@@ -194,16 +193,23 @@ public class MainActivity extends AppCompatActivity {
     }
     private void processText(String text) {
         String[] lines = text.split("\\n");
-        lineaSerie = lines[1];
-
-        String serial = lineaSerie.substring(lineaSerie.indexOf(':') + 1).trim();
-        displayNfcContent(serial);
+        String serialLine = lines.length > 1 ? lines[1] : lines[0];
+        String serial = extractValue(serialLine);
+        if (serial == null) {
+            displayNfcContent(getString(R.string.no_ndef_messages), getString(R.string.no_ndef_messages));
+            return;
+        }
 
         StringBuilder filteredLines = new StringBuilder();
         for (String line : lines) {
             if (line.startsWith("Vol")) {
-                String lineWithoutVol = line.substring(line.indexOf(':') + 1).trim();
-                filteredLines.append(lineWithoutVol).append(" ");
+                String lineWithoutVol = extractValue(line);
+                if (lineWithoutVol != null && !lineWithoutVol.isEmpty()) {
+                    if (filteredLines.length() > 0) {
+                        filteredLines.append(' ');
+                    }
+                    filteredLines.append(lineWithoutVol);
+                }
             }
             if (line.startsWith("Tube")) { //Tube empty
                 isGifAnimating = true;
@@ -212,23 +218,32 @@ public class MainActivity extends AppCompatActivity {
             lstinformacionNFC.add(line);
             displayInformacionNFC(lstinformacionNFC.toArray(new String[0]));
         }
-        displayNfcContent(filteredLines.toString());
-        // Actualiza el ViewModel con los nuevos datos
-        lecturaViewModel.setSerie(serial);
-        lecturaViewModel.setVolumen(filteredLines.toString());
 
+        displayNfcContent(serial, filteredLines.toString().trim());
     }
-    private void displayNfcContent(String content) {
+    private String extractValue(String rawLine) {
+        if (rawLine == null) {
+            return null;
+        }
+        int separatorIndex = rawLine.indexOf(':');
+        if (separatorIndex == -1 || separatorIndex == rawLine.length() - 1) {
+            return null;
+        }
+        return rawLine.substring(separatorIndex + 1).trim();
+    }
+    private void displayNfcContent(String serie, String volumen) {
         String currentDateTime = dateFormat.format(new Date());
 
         TextView txtSerie = findViewById(R.id.lecturaSerie);
         TextView txtVolumen = findViewById(R.id.lecturaVol);
         TextView txtfechaActual = findViewById(R.id.fechaActual);
 
-        txtVolumen.setText(content);
-        txtSerie.setText(content);
+        txtSerie.setText(serie);
+        txtVolumen.setText(volumen);
         txtfechaActual.setText(currentDateTime);
 
+        lecturaViewModel.setSerie(serie);
+        lecturaViewModel.setVolumen(volumen);
         lecturaViewModel.setFecha(currentDateTime);
     }
 
